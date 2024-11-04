@@ -1,8 +1,8 @@
 body {
     font-family: Arial, sans-serif;
+    background-image: url('/static/mountain.jpg');
     background-size: cover;
     background-attachment: fixed;
-    color: #5a53a2;
     margin: 0;
     padding: 0;
 }
