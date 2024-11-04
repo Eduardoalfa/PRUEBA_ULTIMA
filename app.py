@@ -105,16 +105,10 @@ def generar_factura(producto_id, cantidad, fecha):
     if not os.path.exists(carpeta_principal):
         os.makedirs(carpeta_principal)
 
-    mes_actual = datetime.now().strftime('%Y-%m')
-    carpeta_mes = os.path.join(carpeta_principal, mes_actual)
 
-    if not os.path.exists(carpeta_mes):
-        os.makedirs(carpeta_mes)
-
-
-    fecha_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    fecha_str = datetime.now().strftime('%Y-%m-%d_%H-%M')
     nombre_factura = f"Factura({fecha_str}).pdf"
-    ruta_factura = os.path.join(carpeta_mes, nombre_factura)
+    ruta_factura = os.path.join(carpeta_principal, nombre_factura)
 
     c = canvas.Canvas(ruta_factura, pagesize=A4)
     c.setFont("Helvetica-Bold", 16)
@@ -179,11 +173,15 @@ def registrar_venta():
 @app.route('/download_factura/<path:filename>', methods=['GET'])
 def download_factura(filename):
     try:
-        ruta_factura = os.path.abspath(filename)
-        return send_file(ruta_factura, as_attachment=True)
+        ruta_factura = os.path.join('FACTURAS_2024', filename)
+        
+        if os.path.exists(ruta_factura):
+            return send_file(ruta_factura, as_attachment=True)
+        else:
+            return "Error: El archivo no existe", 404
     except Exception as e:
-        print(f"Error al descargar la factura: {e}")
         return "Error al descargar el archivo", 500
+
 
 
 
@@ -292,4 +290,3 @@ def reporte_excel():
 
     workbook.save("reporte_inv.xlsx")
     return send_file("reporte_inv.xlsx", as_attachment=True)
-
